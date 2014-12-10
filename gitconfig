@@ -1,0 +1,12 @@
+[user]
+	name = Adam Sandberg Eriksson
+	email = adam@sandbergericsson.se
+[core]
+	excludesfile = /Users/adam/.gitignore
+[receive]
+	denyCurrentBranch = warn
+[push]
+	default = simple
+[alias]
+	psuh = push
+	pr = pull --rebase

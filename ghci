@@ -1,0 +1,3 @@
+:set -W
+:set prompt "λ "
+:set +c
