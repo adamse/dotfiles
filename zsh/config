@@ -14,19 +14,26 @@ ulimit -S -c 0
 # Use emacs bindings
 bindkey -e
 
+autoload -z edit-command-line
+zle -N edit-command-line
+bindkey "^X^E" edit-command-line
+
+# COMPLETION
 zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
 zstyle ':completion:*' max-errors 5
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 zstyle ':completion:*' special-dirs true
 
-autoload -z edit-command-line
-zle -N edit-command-line
-bindkey "^X^E" edit-command-line
-
 autoload -Uz compinit
-compinit
 autoload bashcompinit
+compinit
 bashcompinit
+
+source ~/.zsh/completion/*
+# enable extra completion if available
+test -d /usr/local/share/zsh-completions &&
+  fpath=(/usr/local/share/zsh-completions $fpath)
+
 
 HISTFILE=~/.histfile
 HISTSIZE=100000
@@ -41,20 +48,16 @@ function test_add() {
   test -d "$1" && PATH="$1:$PATH"
 }
 
+test_add "$HOME/.rvm/bin"
+
 test_add "/usr/texbin"
+test_add "/usr/local/opt/ruby/bin"
+test_add "/usr/local/mysql/bin"
+test_add "/usr/local/bin"
 
 test_add "$HOME/bin"
 test_add "$HOME/local/bin"
-
 test_add "$HOME/local/arcanist/bin"
-
-test_add "/usr/local/opt/ruby/bin"
-
-test_add "/usr/local/mysql/bin"
-
-test_add "/usr/local/bin"
-
-# Haskell stuff
 test_add "$HOME/local/ghc/bin"
 test_add "$HOME/.cabal/bin"
 
@@ -74,10 +77,6 @@ export FTP_PASSIVE
 
 # ignore backups, CVS directories, python bytecode, vim swap files
 FIGNORE="~:CVS:#:.pyc:.swp:.swa:apache-solr-*"
-
-# enable extra completion if available
-test -d /usr/local/share/zsh-completions &&
-  fpath=(/usr/local/share/zsh-completions $fpath)
 
 [[ -s `brew --prefix`/etc/autojump.sh ]] && . `brew --prefix`/etc/autojump.sh
 
@@ -106,13 +105,10 @@ export PAGER MANPAGER
 ACK_PAGER="$PAGER"
 ACK_PAGER_COLOR="$PAGER"
 
-# }}}
-# ----
-# OS SPECIFIC {{{
-# ----
 
-# Nix packages
-if [ -e /Users/adam/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/adam/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+# Nix
+test -e /Users/adam/.nix-profile/etc/profile.d/nix.sh &&
+  source /Users/adam/.nix-profile/etc/profile.d/nix.sh
 
 if [ "$UNAME" == "Darwin" ]; then
     # we always pass these to ls(1)
@@ -130,9 +126,6 @@ if [ "$UNAME" == "Linux" ]; then
 
     test "$TERM" = "rxvt-unicode" &&
         TERM="xterm"
-    
-    test -d "$HOME/local/share/perl5" &&
-        PERL5LIB="$HOME/local/share/perl5:$PERL5LIB"
 fi
 
 if [ "$UNAME" == "FreeBSD" ]; then
@@ -140,10 +133,6 @@ if [ "$UNAME" == "FreeBSD" ]; then
     LS_COMMON="-hBGF"
 fi
 
-# }}}
-# ----
-# PROMPT {{{
-# ----
 
 # Set terminal title
 precmd () { print -Pn "\e]0;%n@%m: %~\a" }
@@ -167,15 +156,11 @@ vcs_info_wrapper() {
 }
 RPROMPT=$'$(vcs_info_wrapper)'
 
-PROMPT="%F{red}%n%f at %F{yellow}%M%f in %B%F{blue}%~%f%b 
+PROMPT="%F{red}%n%f at %F{yellow}%M%f in %B%F{blue}%~%f%b
 %# "
 
 export PROMPT
 
-# }}}
-# ----
-# LS & COLORS {{{
-# ----
 
 export CLICOLOR="yes"
 
@@ -200,20 +185,9 @@ alias l.="ls -d .*"
 alias ll.="ls -ld .*"
 alias chrome='/usr/bin/open -a "/Applications/Google Chrome.app"'
 
-# }}}
-# ----
-# MISC COMMANDS {{{
-# ----
 
-# push SSH public key to another box
-push_ssh_cert() {
-    local _host
-    test -f ~/.ssh/id_rsa.pub || ssh-keygen -t rsa
-    for _host in "$@"; do
-        echo $_host
-        ssh $_host 'cat >> ~/.ssh/authorized_keys' < ~/.ssh/id_rsa.pub
-    done
-}
+# MISC COMMANDS {{{
+
 
 cabal_install_sandbox() {
   if [ "$#" -lt "1" ]; then
@@ -227,25 +201,3 @@ with_sandbox() {
   echo PATH="./cabal-sandbox/bin:$PATH" $@
   PATH="./cabal-sandbox/bin:$PATH" $@
 }
-
-#cabal_sandbox_path() {
-#}
-
-# }}}
-# ----
-# ALIASES {{{
-# ----
-
-test -e ~/.aliases && source .aliases
-
-# }}}
-
-# vim: ts=4 sts=4 shiftwidth=4 expandtab
-
-PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
-
-
-# PLUGINS
-
-# zsh-bd
-. $HOME/.zsh/plugins/bd/bd.zsh
