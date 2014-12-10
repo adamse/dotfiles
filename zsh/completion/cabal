@@ -12,7 +12,7 @@ _cabal_list()
 {
 	cat *.cabal |
 	grep -Ei "^[[:space:]]*($1)[[:space:]]" |
-	sed -e "s/.* \([^ ]*\).*/\1/"
+	gsed -e "s/.* \([^ ]*\).*/\1/"
 }
 
 # List possible targets depending on the command supplied as parameter.  The
@@ -52,7 +52,7 @@ _cabal_subcommands()
             # using simple regexp and "sandbox" subcommand is printed for each
             # successful substitution.
             "$1" help sandbox |
-            sed -rn '/Flags/q;s/^.* sandbox  *([^ ]*).*/\1/;t p;b;: p;p'
+            gsed -rn '/Flags/q;s/^.* sandbox  *([^ ]*).*/\1/;t p;b;: p;p'
             break  # Terminate for loop.
             ;;
         esac
