@@ -1,0 +1,32 @@
+#!env zsh
+
+# OS X specific zsh config
+
+
+# X11
+
+LIBRARY_PATH=/opt/X11/lib:$LIBRARY_PATH
+export LIBRARY_PATH
+
+DYLD_LIBRARY_PATH=/opt/X11/lib:$DYLD_LIBRARY_PATH
+export DYLD_LIBRARY_PATH
+
+# autojump
+
+[[ -s `brew --prefix`/etc/autojump.sh ]] && . `brew --prefix`/etc/autojump.sh
+
+# Nix
+test -e /Users/adam/.nix-profile/etc/profile.d/nix.sh &&
+  source /Users/adam/.nix-profile/etc/profile.d/nix.sh
+
+# LS Colours!
+
+LS_COMMON="-hBGF"
+test t -x /usr/pkg -a ! -L /usr/pkg && {
+  PATH="/usr/pkg/sbin:/usr/pkg/bin:$PATH"
+  MANPATH="/usr/pkg/share/man:$MANPATH"
+}
+
+export LS_COMMON
+
+alias chrome='/usr/bin/open -a "/Applications/Google Chrome.app"'
