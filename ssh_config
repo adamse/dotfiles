@@ -1,1 +1,52 @@
-/Users/adam/.ssh/config
+GSSAPIAuthentication yes
+GSSAPIDelegateCredentials yes
+
+Host *
+  UseKeychain yes
+  AddKeysToAgent yes
+  IdentityFile /Users/adam/.ssh/id_rsa
+
+Host ett.ethnoll.se
+  HostName ett.ethnoll.se
+  User adam
+  Port 2200
+
+Host tva.ethnoll.se
+  HostName tva.ethnoll.se
+  User adam
+  Port 2222
+
+Host demeter.dtek.se
+  HostName demeter.dtek.se
+  User ase
+  Port 222
+
+Host hackeholken.dtek.se
+  HostName hackeholken.dtek.se
+  User adam
+  Port 222
+
+Host mbp.ethnoll
+  HostName mbp.ethnoll.se
+  User adam
+
+Host chalmers2
+  HostName remote2.student.chalmers.se
+  User saadam
+
+Host bz1
+  HostName bz1.breezesystem.com
+  Port 5900
+  IdentityFile ~/.ssh/id_rsa.greenbyte
+  User adam
+
+Host router.ethnoll.se
+  User root
+
+Host 10.0.0.1
+  User root
+
+Host itviking
+  User adam
+  HostName itviking.se
+  Port 22422
